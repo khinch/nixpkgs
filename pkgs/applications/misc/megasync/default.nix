@@ -7,34 +7,31 @@
 , curl
 , doxygen
 , fetchFromGitHub
-, ffmpeg
+, ffmpeg_5
 , freeimage
 , libmediainfo
 , libraw
+, libsForQt5
 , libsodium
 , libtool
 , libuv
 , libzen
 , lsb-release
-, mkDerivation
 , pkg-config
-, qtbase
-, qttools
-, qtx11extras
 , sqlite
 , swig
 , unzip
 , wget
 }:
-mkDerivation rec {
+stdenv.mkDerivation rec {
   pname = "megasync";
-  version = "4.9.0.0";
+  version = "4.12.2.0";
 
   src = fetchFromGitHub {
     owner = "meganz";
     repo = "MEGAsync";
     rev = "v${version}_Linux";
-    sha256 = "sha256-s0E8kJ4PJmhaxVcWPCyCk/KbcX4V3IESdZhSosPlZuM=";
+    sha256 = "sha256-Rl9/Y+Ll7nq6v92ca6phRilo/DpwunMbp/436rgyi2g=";
     fetchSubmodules = true;
   };
 
@@ -45,23 +42,24 @@ mkDerivation rec {
     libtool
     lsb-release
     pkg-config
-    qttools
+    libsForQt5.qt5.qttools
     swig
     unzip
+    libsForQt5.qt5.wrapQtAppsHook
   ];
   buildInputs = [
     c-ares
     cryptopp
     curl
-    ffmpeg
+    ffmpeg_5
     freeimage
     libmediainfo
     libraw
     libsodium
     libuv
     libzen
-    qtbase
-    qtx11extras
+    libsForQt5.qt5.qtbase
+    libsForQt5.qt5.qtx11extras
     sqlite
     wget
   ];
@@ -72,7 +70,6 @@ mkDerivation rec {
     ./noinstall-distro-version.patch
     # megasync target is not part of the install rule thanks to a commented block
     ./install-megasync.patch
-    ./ffmpeg_44.patch
   ];
 
   postPatch = ''
