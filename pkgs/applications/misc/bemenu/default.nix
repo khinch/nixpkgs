@@ -1,4 +1,4 @@
-{ stdenv, lib, fetchFromGitHub, fetchpatch, cairo, libxkbcommon
+{ stdenv, lib, fetchFromGitHub, cairo, libxkbcommon
 , pango, fribidi, harfbuzz, pcre, pkg-config, scdoc
 , ncursesSupport ? true, ncurses
 , waylandSupport ? true, wayland, wayland-protocols, wayland-scanner
@@ -7,13 +7,13 @@
 
 stdenv.mkDerivation (finalAttrs: {
   pname = "bemenu";
-  version = "0.6.17";
+  version = "0.6.23";
 
   src = fetchFromGitHub {
     owner = "Cloudef";
-    repo = finalAttrs.pname;
+    repo = "bemenu";
     rev = finalAttrs.version;
-    sha256 = "sha256-HfA8VtYP8YHMQNXrg3E6IwX7rR3rp/gyE62InsddjZE=";
+    hash = "sha256-0vpqJ2jydTt6aVni0ma0g+80PFz+C4xJ5M77sMODkSg=";
   };
 
   strictDeps = true;
@@ -44,7 +44,7 @@ stdenv.mkDerivation (finalAttrs: {
     homepage = "https://github.com/Cloudef/bemenu";
     description = "Dynamic menu library and client program inspired by dmenu";
     license = licenses.gpl3Plus;
-    maintainers = with maintainers; [ lheckemann ];
+    maintainers = with maintainers; [ crertel ];
     mainProgram = "bemenu";
     platforms = with platforms; linux;
   };

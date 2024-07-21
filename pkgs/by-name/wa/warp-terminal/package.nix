@@ -10,20 +10,25 @@
 , libglvnd
 , libxkbcommon
 , vulkan-loader
+, wayland
 , xdg-utils
 , xorg
 , zlib
+, makeWrapper
+, waylandSupport ? false
 }:
 
 let
 pname = "warp-terminal";
-version = "0.2024.02.20.08.01.stable_01";
+versions = lib.importJSON ./versions.json;
+passthru.updateScript = ./update.sh;
 
 linux = stdenv.mkDerivation (finalAttrs:  {
-  inherit pname version meta;
+  inherit pname meta passthru;
+  inherit (versions.linux) version;
   src = fetchurl {
+    inherit (versions.linux) hash;
     url = "https://releases.warp.dev/stable/v${finalAttrs.version}/warp-terminal-v${finalAttrs.version}-1-x86_64.pkg.tar.zst";
-    hash = "sha256-L8alnqSE4crrDozRfPaAAMkLc+5+8d9XBKd5ddsxmD0=";
   };
 
   sourceRoot = ".";
@@ -33,7 +38,7 @@ linux = stdenv.mkDerivation (finalAttrs:  {
       --replace-fail /opt/ $out/opt/
   '';
 
-  nativeBuildInputs = [ autoPatchelfHook zstd ];
+  nativeBuildInputs = [ autoPatchelfHook zstd makeWrapper ];
 
   buildInputs = [
     curl
@@ -52,7 +57,7 @@ linux = stdenv.mkDerivation (finalAttrs:  {
     xorg.libxcb
     xorg.libXcursor
     xorg.libXi
-  ];
+  ] ++ lib.optionals waylandSupport [wayland];
 
   installPhase = ''
     runHook preInstall
@@ -60,15 +65,19 @@ linux = stdenv.mkDerivation (finalAttrs:  {
     mkdir $out
     cp -r opt usr/* $out
 
+  '' + lib.optionalString waylandSupport ''
+    wrapProgram $out/bin/warp-terminal --set WARP_ENABLE_WAYLAND 1
+  '' + ''
     runHook postInstall
   '';
 });
 
 darwin = stdenvNoCC.mkDerivation (finalAttrs: {
-  inherit pname version meta;
+  inherit pname meta passthru;
+  inherit (versions.darwin) version;
   src = fetchurl {
+    inherit (versions.darwin) hash;
     url = "https://releases.warp.dev/stable/v${finalAttrs.version}/Warp.dmg";
-    hash = "sha256-tFtoD8URMFfJ3HRkyKStuDStFkoRIV97y9kV4pbDPro=";
   };
 
   sourceRoot = ".";
@@ -90,7 +99,7 @@ meta = with lib; {
   homepage = "https://www.warp.dev";
   license = licenses.unfree;
   sourceProvenance = with lib.sourceTypes; [ binaryNativeCode ];
-  maintainers = with maintainers; [ emilytrau Enzime ];
+  maintainers = with maintainers; [ emilytrau imadnyc donteatoreo johnrtitor ];
   platforms = platforms.darwin ++ [ "x86_64-linux" ];
 };
 

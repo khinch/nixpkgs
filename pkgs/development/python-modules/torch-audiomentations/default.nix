@@ -1,25 +1,26 @@
-{ lib
-, buildPythonPackage
-, fetchFromGitHub
-, setuptools
-, wheel
-, julius
-, librosa
-, torch
-, torchaudio
-, torch-pitch-shift
+{
+  lib,
+  buildPythonPackage,
+  fetchFromGitHub,
+  setuptools,
+  wheel,
+  julius,
+  librosa,
+  torch,
+  torchaudio,
+  torch-pitch-shift,
 }:
 
 buildPythonPackage rec {
   pname = "torch-audiomentations";
-  version = "0.11.0";
+  version = "0.11.1";
   pyproject = true;
 
   src = fetchFromGitHub {
     owner = "asteroid-team";
     repo = "torch-audiomentations";
-    rev = "v${version}";
-    hash = "sha256-r3J8yo3+jjuD4qqpC5Ax3TFPL9pGUNc0EksTkCTJKbU=";
+    rev = "refs/tags/v${version}";
+    hash = "sha256-0+5wc+mP4c221q6mdaqPalfumTOtdnkjnIPtLErOp9E=";
   };
 
   propagatedBuildInputs = [

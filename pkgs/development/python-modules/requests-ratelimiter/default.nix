@@ -1,28 +1,27 @@
-{ lib
-, buildPythonPackage
-, fetchFromGitHub
-, poetry-core
-, pyrate-limiter
-, requests
-, pytestCheckHook
-, requests-mock
+{
+  lib,
+  buildPythonPackage,
+  fetchFromGitHub,
+  poetry-core,
+  pyrate-limiter,
+  requests,
+  pytestCheckHook,
+  requests-mock,
 }:
 
 buildPythonPackage rec {
   pname = "requests-ratelimiter";
-  version = "0.5.0";
+  version = "0.6.0";
   pyproject = true;
 
   src = fetchFromGitHub {
     owner = "JWCook";
     repo = "requests-ratelimiter";
     rev = "refs/tags/v${version}";
-    hash = "sha256-JdxyBLrxXXb2KJ89qWl7yXP0fIafgnAguPGsN5iit8Y=";
+    hash = "sha256-ctCD+vlV90KCO7DdPUZJipBC/lz6NXx0gYuHHrs22IY=";
   };
 
-  nativeBuildInputs = [
-    poetry-core
-  ];
+  nativeBuildInputs = [ poetry-core ];
 
   propagatedBuildInputs = [
     pyrate-limiter

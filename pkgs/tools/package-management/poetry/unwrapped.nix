@@ -38,8 +38,8 @@
 
 buildPythonPackage rec {
   pname = "poetry";
-  version = "1.8.1";
-  format = "pyproject";
+  version = "1.8.3";
+  pyproject = true;
 
   disabled = pythonOlder "3.8";
 
@@ -47,11 +47,16 @@ buildPythonPackage rec {
     owner = "python-poetry";
     repo = "poetry";
     rev = "refs/tags/${version}";
-    hash = "sha256-tHtd5vO3TMjO0gqyECuS0FUAcE90nkKZwOm3ne6poFQ=";
+    hash = "sha256-PPHt9GG5XJzrhnuAS8L+0Pa3El3RNCdEbXbLnHopDWg=";
   };
 
   nativeBuildInputs = [
     installShellFiles
+  ];
+
+  pythonRelaxDeps = [
+    "dulwich"
+    "keyring"
   ];
 
   propagatedBuildInputs = [

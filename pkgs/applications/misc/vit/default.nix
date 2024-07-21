@@ -14,7 +14,7 @@ buildPythonApplication rec {
 
   src = fetchPypi {
     inherit pname version;
-    sha256 = "sha256-qDfY6GWnDQ44Sh540xQzDwANEI+mLjpy2a7G3sfKIzw=";
+    hash = "sha256-qDfY6GWnDQ44Sh540xQzDwANEI+mLjpy2a7G3sfKIzw=";
   };
 
   propagatedBuildInputs = [
@@ -33,7 +33,8 @@ buildPythonApplication rec {
   meta = with lib; {
     homepage = "https://github.com/scottkosty/vit";
     description = "Visual Interactive Taskwarrior";
-    maintainers = with maintainers; [ dtzWill arcnmx ];
+    mainProgram = "vit";
+    maintainers = with maintainers; [ arcnmx ];
     platforms = platforms.all;
     license = licenses.mit;
   };

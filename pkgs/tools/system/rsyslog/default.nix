@@ -61,11 +61,11 @@
 
 stdenv.mkDerivation rec {
   pname = "rsyslog";
-  version = "8.2312.0";
+  version = "8.2406.0";
 
   src = fetchurl {
     url = "https://www.rsyslog.com/files/download/rsyslog/${pname}-${version}.tar.gz";
-    hash = "sha256-d0AyAGEoqJZDf1kT4TKqJ9v7k3zYhH5ElSLVoS1j0D4=";
+    hash = "sha256-E0PgJp3TIWb/3gTXzuv6DnFGzx28aWLFa/Qoxh8Bp98=";
   };
 
   nativeBuildInputs = [
@@ -185,6 +185,7 @@ stdenv.mkDerivation rec {
   meta = with lib; {
     homepage = "https://www.rsyslog.com/";
     description = "Enhanced syslog implementation";
+    mainProgram = "rsyslogd";
     changelog = "https://raw.githubusercontent.com/rsyslog/rsyslog/v${version}/ChangeLog";
     license = licenses.gpl3Only;
     platforms = platforms.linux;

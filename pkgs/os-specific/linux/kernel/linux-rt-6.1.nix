@@ -6,11 +6,12 @@
 , ... } @ args:
 
 let
-  version = "6.1.79-rt25"; # updated by ./update-rt.sh
+  version = "6.1.99-rt36"; # updated by ./update-rt.sh
   branch = lib.versions.majorMinor version;
   kversion = builtins.elemAt (lib.splitString "-" version) 0;
 in buildLinux (args // {
   inherit version;
+  pname = "linux-rt";
 
   # modDirVersion needs a patch number, change X.Y-rtZ to X.Y.0-rtZ.
   modDirVersion = if (builtins.match "[^.]*[.][^.]*-.*" version) == null then version
@@ -18,14 +19,14 @@ in buildLinux (args // {
 
   src = fetchurl {
     url = "mirror://kernel/linux/kernel/v6.x/linux-${kversion}.tar.xz";
-    sha256 = "16xkd0hcslqlcf55d4ivzhf1fkhfs5yy0m9arbax8pmm5yi9r97s";
+    sha256 = "1lsdwdx7i7xw1rzq88k3bz8sar77gb4rnmjx11pbmvmiwaffx1n0";
   };
 
   kernelPatches = let rt-patch = {
     name = "rt";
     patch = fetchurl {
       url = "mirror://kernel/linux/kernel/projects/rt/${branch}/older/patch-${version}.patch.xz";
-      sha256 = "1q851lhbdcxipzxzqkyp6wv4g437kgf8yj24n2x4rkbny9vgz220";
+      sha256 = "17a468lar9kf0q6n3vmknrbasrwp6pmq2gg39n1sp1bmmpr43qsf";
     };
   }; in [ rt-patch ] ++ kernelPatches;
 

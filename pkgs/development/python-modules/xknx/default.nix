@@ -1,18 +1,19 @@
-{ lib
-, async-timeout
-, buildPythonPackage
-, fetchFromGitHub
-, cryptography
-, ifaddr
-, pytest-asyncio_0_21
-, pytestCheckHook
-, pythonOlder
-, setuptools
+{
+  lib,
+  async-timeout,
+  buildPythonPackage,
+  fetchFromGitHub,
+  cryptography,
+  ifaddr,
+  pytest-asyncio,
+  pytestCheckHook,
+  pythonOlder,
+  setuptools,
 }:
 
 buildPythonPackage rec {
   pname = "xknx";
-  version = "2.12.1";
+  version = "2.12.2";
   pyproject = true;
 
   disabled = pythonOlder "3.8";
@@ -21,27 +22,22 @@ buildPythonPackage rec {
     owner = "XKNX";
     repo = "xknx";
     rev = "refs/tags/${version}";
-    hash = "sha256-O8xhih/EVULTq4jdmxInzXRO4m6PJA9pyzsHjR+58dQ=";
+    hash = "sha256-gajxXIR3lmHsW7258v4z20RilzGfm5KGVrXZwRm74Mk=";
   };
 
-  nativeBuildInputs = [
-    setuptools
-  ];
+  build-system = [ setuptools ];
 
-  propagatedBuildInputs = [
-    async-timeout
+  dependencies = [
     cryptography
     ifaddr
-  ];
+  ] ++ lib.optionals (pythonOlder "3.11") [ async-timeout ];
 
   nativeCheckInputs = [
-    pytest-asyncio_0_21
+    pytest-asyncio
     pytestCheckHook
   ];
 
-  pythonImportsCheck = [
-    "xknx"
-  ];
+  pythonImportsCheck = [ "xknx" ];
 
   disabledTests = [
     # Test requires network access

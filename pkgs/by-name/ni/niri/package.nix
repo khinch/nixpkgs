@@ -1,6 +1,7 @@
 { lib
 , rustPlatform
 , fetchFromGitHub
+, nix-update-script
 , pkg-config
 , libxkbcommon
 , pango
@@ -13,26 +14,25 @@
 , mesa
 , fontconfig
 , libglvnd
-, libclang
 , autoPatchelfHook
 , clang
 }:
 
 rustPlatform.buildRustPackage rec {
   pname = "niri";
-  version = "0.1.2";
+  version = "0.1.7";
 
   src = fetchFromGitHub {
     owner = "YaLTeR";
     repo = "niri";
     rev = "v${version}";
-    hash = "sha256-vO6ak5rT6ntBC20vYC36zcEcHv7Cki9y8A+c7ThfsUg=";
+    hash = "sha256-EdlOGL9RdO77HnZxv2UpPwrJdFH8qPrPSRtkBBV167s=";
   };
 
   cargoLock = {
     lockFile = ./Cargo.lock;
     outputHashes = {
-      "smithay-0.3.0" = "sha256-ZEWamojE5ZRlhPVv/DK2Mj+QIz7zudw9+AxFD7Onr9Q=";
+      "smithay-0.3.0" = "sha256-K1lguY6f1mbrfxkDNeLlNAXSM9JC8Jm61MyBIsIYiNs=";
     };
   };
 
@@ -62,29 +62,28 @@ rustPlatform.buildRustPackage rec {
     libglvnd # For libEGL
   ];
 
-  LIBCLANG_PATH = "${libclang.lib}/lib";
-
   passthru.providedSessions = ["niri"];
 
+  postPatch = ''
+    patchShebangs ./resources/niri-session
+    substituteInPlace ./resources/niri.service \
+      --replace-fail '/usr/bin' "$out/bin"
+  '';
+
   postInstall = ''
-    mkdir -p $out/share/{systemd/user,wayland-sessions,xdg-desktop-portal}
-
-    cp ./resources/niri-session $out/bin/niri-session
-    cp ./resources/niri.service $out/share/systemd/user/niri.service
-    cp ./resources/niri-shutdown.target $out/share/systemd/user/niri-shutdown.target
-    cp ./resources/niri.desktop $out/share/wayland-sessions/niri.desktop
-    cp ./resources/niri-portals.conf $out/share/xdg-desktop-portal/niri-portals.conf
+    install -Dm0755 ./resources/niri-session -t $out/bin
+    install -Dm0644 resources/niri.desktop -t $out/share/wayland-sessions
+    install -Dm0644 resources/niri-portals.conf -t $out/share/xdg-desktop-portal
+    install -Dm0644 resources/niri{-shutdown.target,.service} -t $out/share/systemd/user
   '';
 
-  postFixup = ''
-    sed -i "s#/usr#$out#" $out/share/systemd/user/niri.service
-  '';
+  passthru.updateScript = nix-update-script { };
 
   meta = with lib; {
-    description = "A scrollable-tiling Wayland compositor";
+    description = "Scrollable-tiling Wayland compositor";
     homepage = "https://github.com/YaLTeR/niri";
     license = licenses.gpl3Only;
-    maintainers = with maintainers; [ iogamaster ];
+    maintainers = with maintainers; [ iogamaster foo-dogsquared sodiboo ];
     mainProgram = "niri";
     platforms = platforms.linux;
   };

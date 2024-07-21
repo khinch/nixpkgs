@@ -6,10 +6,9 @@
 , cctools
 , IOKit
 , lib
-, fetchpatch
-, makeBinaryWrapper
 , nixosTests
 , enableLocalIcons ? false
+, nix-update-script
 }:
 let
   dashboardIcons = fetchFromGitHub {
@@ -28,16 +27,16 @@ let
 in
 buildNpmPackage rec {
   pname = "homepage-dashboard";
-  version = "0.8.8";
+  version = "0.9.5";
 
   src = fetchFromGitHub {
     owner = "gethomepage";
     repo = "homepage";
     rev = "v${version}";
-    hash = "sha256-QPMjf+VpsjvIrjjhDuZqd8VLl2Uu5Wop286Yn8XeRWk=";
+    hash = "sha256-j5DGi5bLoUOoeu8RupiN+qeixNcpPAu3XG4PidZ5Bsg=";
   };
 
-  npmDepsHash = "sha256-u15lDdXnV3xlXAC9WQQKLIeV/AgtRM1sFNsacw3j6kU=";
+  npmDepsHash = "sha256-jYZUVwrOxoAbfHHSBkN5IlYhC6yZVVwRoZErkbYrjUs=";
 
   preBuild = ''
     mkdir -p config
@@ -85,12 +84,16 @@ buildNpmPackage rec {
 
   doDist = false;
 
-  passthru.tests = {
-    inherit (nixosTests) homepage-dashboard;
+  passthru = {
+    tests = {
+      inherit (nixosTests) homepage-dashboard;
+    };
+    updateScript = nix-update-script { };
   };
 
   meta = {
-    description = "A highly customisable dashboard with Docker and service API integrations.";
+    description = "Highly customisable dashboard with Docker and service API integrations";
+    changelog = "https://github.com/gethomepage/homepage/releases/tag/v${version}";
     mainProgram = "homepage";
     homepage = "https://gethomepage.dev";
     license = lib.licenses.gpl3;
